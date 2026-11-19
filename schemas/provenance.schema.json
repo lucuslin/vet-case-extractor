@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ProvenanceBundle",
+  "type": "array",
+  "items": {
+    "$defs": {
+      "BBox": {
+        "description": "Axis-aligned bounding box in page pixel or point coordinates.",
+        "properties": {
+          "x0": {
+            "title": "X0",
+            "type": "number"
+          },
+          "y0": {
+            "title": "Y0",
+            "type": "number"
+          },
+          "x1": {
+            "title": "X1",
+            "type": "number"
+          },
+          "y1": {
+            "title": "Y1",
+            "type": "number"
+          }
+        },
+        "required": [
+          "x0",
+          "y0",
+          "x1",
+          "y1"
+        ],
+        "title": "BBox",
+        "type": "object"
+      },
+      "ReviewStatus": {
+        "enum": [
+          "ok",
+          "review_required",
+          "ungrounded",
+          "ocr_suspect",
+          "failed"
+        ],
+        "title": "ReviewStatus",
+        "type": "string"
+      }
+    },
+    "description": "Source grounding pointer linking an extracted field to page text and bounding box.",
+    "properties": {
+      "document_id": {
+        "title": "Document Id",
+        "type": "string"
+      },
+      "file_sha256": {
+        "title": "File Sha256",
+        "type": "string"
+      },
+      "case_id": {
+        "title": "Case Id",
+        "type": "string"
+      },
+      "field_name": {
+        "title": "Field Name",
+        "type": "string"
+      },
+      "page_index": {
+        "anyOf": [
+          {
+            "type": "integer"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Page Index"
+      },
+      "quote": {
+        "default": "",
+        "title": "Quote",
+        "type": "string"
+      },
+      "bbox": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/BBox"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null
+      },
+      "match_score": {
+        "default": 0.0,
+        "title": "Match Score",
+        "type": "number"
+      },
+      "extraction_method": {
+        "default": "",
+        "title": "Extraction Method",
+        "type": "string"
+      },
+      "model_name": {
+        "default": "",
+        "title": "Model Name",
+        "type": "string"
+      },
+      "rule_version": {
+        "default": "",
+        "title": "Rule Version",
+        "type": "string"
+      },
+      "review_status": {
+        "$ref": "#/$defs/ReviewStatus",
+        "default": "ok"
+      },
+      "notes": {
+        "default": "",
+        "title": "Notes",
+        "type": "string"
+      }
+    },
+    "required": [
+      "document_id",
+      "file_sha256",
+      "case_id",
+      "field_name"
+    ],
+    "title": "EvidenceSpan",
+    "type": "object"
+  }
+}

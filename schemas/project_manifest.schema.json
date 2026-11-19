@@ -1,0 +1,160 @@
+{
+  "$defs": {
+    "DocumentRecord": {
+      "description": "Ingestion and processing state for a single source PDF.",
+      "properties": {
+        "document_id": {
+          "title": "Document Id",
+          "type": "string"
+        },
+        "filename": {
+          "title": "Filename",
+          "type": "string"
+        },
+        "file_path": {
+          "title": "File Path",
+          "type": "string"
+        },
+        "file_sha256": {
+          "title": "File Sha256",
+          "type": "string"
+        },
+        "source_type": {
+          "$ref": "#/$defs/SourceType",
+          "default": "auto"
+        },
+        "page_count": {
+          "default": 0,
+          "title": "Page Count",
+          "type": "integer"
+        },
+        "page_offset": {
+          "default": 0,
+          "title": "Page Offset",
+          "type": "integer"
+        },
+        "target_article_query": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Target Article Query"
+        },
+        "status": {
+          "$ref": "#/$defs/TaskStatus",
+          "default": "pending"
+        },
+        "pages_needing_ocr": {
+          "items": {
+            "type": "integer"
+          },
+          "title": "Pages Needing Ocr",
+          "type": "array"
+        },
+        "pages_failed": {
+          "items": {
+            "type": "integer"
+          },
+          "title": "Pages Failed",
+          "type": "array"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Error"
+        },
+        "ingested_at": {
+          "title": "Ingested At",
+          "type": "string"
+        },
+        "updated_at": {
+          "title": "Updated At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "document_id",
+        "filename",
+        "file_path",
+        "file_sha256"
+      ],
+      "title": "DocumentRecord",
+      "type": "object"
+    },
+    "SourceType": {
+      "enum": [
+        "auto",
+        "journal",
+        "book"
+      ],
+      "title": "SourceType",
+      "type": "string"
+    },
+    "TaskStatus": {
+      "enum": [
+        "pending",
+        "running",
+        "completed",
+        "review_required",
+        "failed"
+      ],
+      "title": "TaskStatus",
+      "type": "string"
+    }
+  },
+  "description": "Top-level persistent state manifest for a vet-case-extractor project workspace.",
+  "properties": {
+    "schema_version": {
+      "default": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "project_dir": {
+      "title": "Project Dir",
+      "type": "string"
+    },
+    "source_type": {
+      "$ref": "#/$defs/SourceType",
+      "default": "auto"
+    },
+    "created_at": {
+      "title": "Created At",
+      "type": "string"
+    },
+    "updated_at": {
+      "title": "Updated At",
+      "type": "string"
+    },
+    "documents": {
+      "additionalProperties": {
+        "$ref": "#/$defs/DocumentRecord"
+      },
+      "title": "Documents",
+      "type": "object"
+    },
+    "case_statuses": {
+      "additionalProperties": {
+        "$ref": "#/$defs/TaskStatus"
+      },
+      "title": "Case Statuses",
+      "type": "object"
+    }
+  },
+  "required": [
+    "project_dir"
+  ],
+  "title": "ProjectManifest",
+  "type": "object"
+}

@@ -1,0 +1,487 @@
+{
+  "$defs": {
+    "BBox": {
+      "description": "Axis-aligned bounding box in page pixel or point coordinates.",
+      "properties": {
+        "x0": {
+          "title": "X0",
+          "type": "number"
+        },
+        "y0": {
+          "title": "Y0",
+          "type": "number"
+        },
+        "x1": {
+          "title": "X1",
+          "type": "number"
+        },
+        "y1": {
+          "title": "Y1",
+          "type": "number"
+        }
+      },
+      "required": [
+        "x0",
+        "y0",
+        "x1",
+        "y1"
+      ],
+      "title": "BBox",
+      "type": "object"
+    },
+    "EvidenceSpan": {
+      "description": "Source grounding pointer linking an extracted field to page text and bounding box.",
+      "properties": {
+        "document_id": {
+          "title": "Document Id",
+          "type": "string"
+        },
+        "file_sha256": {
+          "title": "File Sha256",
+          "type": "string"
+        },
+        "case_id": {
+          "title": "Case Id",
+          "type": "string"
+        },
+        "field_name": {
+          "title": "Field Name",
+          "type": "string"
+        },
+        "page_index": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Page Index"
+        },
+        "quote": {
+          "default": "",
+          "title": "Quote",
+          "type": "string"
+        },
+        "bbox": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BBox"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "match_score": {
+          "default": 0.0,
+          "title": "Match Score",
+          "type": "number"
+        },
+        "extraction_method": {
+          "default": "",
+          "title": "Extraction Method",
+          "type": "string"
+        },
+        "model_name": {
+          "default": "",
+          "title": "Model Name",
+          "type": "string"
+        },
+        "rule_version": {
+          "default": "",
+          "title": "Rule Version",
+          "type": "string"
+        },
+        "review_status": {
+          "$ref": "#/$defs/ReviewStatus",
+          "default": "ok"
+        },
+        "notes": {
+          "default": "",
+          "title": "Notes",
+          "type": "string"
+        }
+      },
+      "required": [
+        "document_id",
+        "file_sha256",
+        "case_id",
+        "field_name"
+      ],
+      "title": "EvidenceSpan",
+      "type": "object"
+    },
+    "LabTableRow": {
+      "description": "Structured laboratory test row preserving raw OCR/native strings without auto-mutation.",
+      "properties": {
+        "item_raw": {
+          "title": "Item Raw",
+          "type": "string"
+        },
+        "value_raw": {
+          "default": "",
+          "title": "Value Raw",
+          "type": "string"
+        },
+        "unit_raw": {
+          "default": "",
+          "title": "Unit Raw",
+          "type": "string"
+        },
+        "ref_range_raw": {
+          "default": "",
+          "title": "Ref Range Raw",
+          "type": "string"
+        },
+        "flag_raw": {
+          "default": "",
+          "title": "Flag Raw",
+          "type": "string"
+        },
+        "page_index": {
+          "title": "Page Index",
+          "type": "integer"
+        },
+        "bbox": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BBox"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "table_title": {
+          "default": "",
+          "title": "Table Title",
+          "type": "string"
+        },
+        "anomalies": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Anomalies",
+          "type": "array"
+        }
+      },
+      "required": [
+        "item_raw",
+        "page_index"
+      ],
+      "title": "LabTableRow",
+      "type": "object"
+    },
+    "NormalizationChange": {
+      "description": "Audit log entry recording a deterministic normalization change from raw to normalized.",
+      "properties": {
+        "field_name": {
+          "title": "Field Name",
+          "type": "string"
+        },
+        "rule_id": {
+          "title": "Rule Id",
+          "type": "string"
+        },
+        "before": {
+          "title": "Before",
+          "type": "string"
+        },
+        "after": {
+          "title": "After",
+          "type": "string"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "field_name",
+        "rule_id",
+        "before",
+        "after",
+        "reason"
+      ],
+      "title": "NormalizationChange",
+      "type": "object"
+    },
+    "ReviewStatus": {
+      "enum": [
+        "ok",
+        "review_required",
+        "ungrounded",
+        "ocr_suspect",
+        "failed"
+      ],
+      "title": "ReviewStatus",
+      "type": "string"
+    },
+    "SourceType": {
+      "enum": [
+        "auto",
+        "journal",
+        "book"
+      ],
+      "title": "SourceType",
+      "type": "string"
+    },
+    "TaskStatus": {
+      "enum": [
+        "pending",
+        "running",
+        "completed",
+        "review_required",
+        "failed"
+      ],
+      "title": "TaskStatus",
+      "type": "string"
+    }
+  },
+  "description": "Unified internal case record holding both raw and normalized layers plus provenance.",
+  "properties": {
+    "schema_version": {
+      "default": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "document_id": {
+      "title": "Document Id",
+      "type": "string"
+    },
+    "file_sha256": {
+      "title": "File Sha256",
+      "type": "string"
+    },
+    "case_id": {
+      "title": "Case Id",
+      "type": "string"
+    },
+    "case_order": {
+      "default": 1,
+      "title": "Case Order",
+      "type": "integer"
+    },
+    "source_type": {
+      "$ref": "#/$defs/SourceType"
+    },
+    "source_title": {
+      "default": "",
+      "title": "Source Title",
+      "type": "string"
+    },
+    "publication_year": {
+      "default": "",
+      "title": "Publication Year",
+      "type": "string"
+    },
+    "received_year": {
+      "default": "",
+      "title": "Received Year",
+      "type": "string"
+    },
+    "page_range": {
+      "default": "",
+      "title": "Page Range",
+      "type": "string"
+    },
+    "book_page_range": {
+      "default": "",
+      "title": "Book Page Range",
+      "type": "string"
+    },
+    "chapter_number": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Chapter Number"
+    },
+    "chapter_title": {
+      "default": "",
+      "title": "Chapter Title",
+      "type": "string"
+    },
+    "case_number": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Case Number"
+    },
+    "case_level": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Case Level"
+    },
+    "title": {
+      "default": "",
+      "title": "Title",
+      "type": "string"
+    },
+    "medical_history_raw": {
+      "default": "",
+      "title": "Medical History Raw",
+      "type": "string"
+    },
+    "medical_test_raw": {
+      "default": "",
+      "title": "Medical Test Raw",
+      "type": "string"
+    },
+    "medical_treatment_raw": {
+      "default": "",
+      "title": "Medical Treatment Raw",
+      "type": "string"
+    },
+    "diagnosis_raw": {
+      "default": "",
+      "title": "Diagnosis Raw",
+      "type": "string"
+    },
+    "follow_up_raw": {
+      "default": "",
+      "title": "Follow Up Raw",
+      "type": "string"
+    },
+    "notes_raw": {
+      "default": "",
+      "title": "Notes Raw",
+      "type": "string"
+    },
+    "medical_history": {
+      "default": "",
+      "title": "Medical History",
+      "type": "string"
+    },
+    "medical_test": {
+      "default": "",
+      "title": "Medical Test",
+      "type": "string"
+    },
+    "medical_treatment": {
+      "default": "",
+      "title": "Medical Treatment",
+      "type": "string"
+    },
+    "diagnosis_normalized": {
+      "default": "",
+      "title": "Diagnosis Normalized",
+      "type": "string"
+    },
+    "follow_up": {
+      "default": "",
+      "title": "Follow Up",
+      "type": "string"
+    },
+    "notes": {
+      "default": "",
+      "title": "Notes",
+      "type": "string"
+    },
+    "evidence_spans": {
+      "items": {
+        "$ref": "#/$defs/EvidenceSpan"
+      },
+      "title": "Evidence Spans",
+      "type": "array"
+    },
+    "normalization_changes": {
+      "items": {
+        "$ref": "#/$defs/NormalizationChange"
+      },
+      "title": "Normalization Changes",
+      "type": "array"
+    },
+    "lab_rows": {
+      "items": {
+        "$ref": "#/$defs/LabTableRow"
+      },
+      "title": "Lab Rows",
+      "type": "array"
+    },
+    "status": {
+      "$ref": "#/$defs/TaskStatus",
+      "default": "pending"
+    },
+    "review_status": {
+      "$ref": "#/$defs/ReviewStatus",
+      "default": "ok"
+    },
+    "review_reasons": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Review Reasons",
+      "type": "array"
+    },
+    "extraction_method": {
+      "default": "",
+      "title": "Extraction Method",
+      "type": "string"
+    },
+    "model_name": {
+      "default": "",
+      "title": "Model Name",
+      "type": "string"
+    },
+    "rule_version": {
+      "default": "",
+      "title": "Rule Version",
+      "type": "string"
+    },
+    "token_usage": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "title": "Token Usage",
+      "type": "object"
+    },
+    "error": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Error"
+    },
+    "updated_at": {
+      "title": "Updated At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "document_id",
+    "file_sha256",
+    "case_id",
+    "source_type"
+  ],
+  "title": "CaseRecord",
+  "type": "object"
+}

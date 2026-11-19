@@ -1,0 +1,46 @@
+rule_version: "1.0.0"
+
+pdf:
+  min_chars_per_page: 50
+  min_cjk_ratio_with_image: 0.20
+  max_garbled_ratio: 0.08
+  use_pdfplumber_fallback: true
+  render_all_pages_for_review: true
+  journal_render_dpi: 300
+  book_render_dpi: 250
+
+ocr:
+  engine: "rapidocr"
+  use_angle_cls: false
+  rec_batch_num: 16
+  workers: 3
+  ort_intra_op_threads: 2
+  ort_inter_op_threads: 1
+  min_ram_gb_for_3_workers: 8.0
+  min_ram_gb_for_2_workers: 4.0
+
+layout:
+  header_margin_ratio: 0.07
+  footer_margin_ratio: 0.93
+  full_width_threshold_ratio: 0.58
+  gutter_min_gap_ratio: 0.02
+
+segmentation:
+  default_page_offset: 0
+  batch_size: 8
+
+llm:
+  provider: "gemini"
+  gemini_model: "gemini-2.5-flash"
+  openai_model: "gpt-4o-mini"
+  temperature: 0.0
+  timeout_seconds: 90.0
+  max_retries: 3
+  concurrency: 2
+  chunk_max_chars: 18000
+  chunk_overlap_chars: 800
+
+export:
+  default_layer: "normalized"
+  freeze_header: true
+  wrap_text: true

@@ -1,0 +1,306 @@
+{
+  "$defs": {
+    "BBox": {
+      "description": "Axis-aligned bounding box in page pixel or point coordinates.",
+      "properties": {
+        "x0": {
+          "title": "X0",
+          "type": "number"
+        },
+        "y0": {
+          "title": "Y0",
+          "type": "number"
+        },
+        "x1": {
+          "title": "X1",
+          "type": "number"
+        },
+        "y1": {
+          "title": "Y1",
+          "type": "number"
+        }
+      },
+      "required": [
+        "x0",
+        "y0",
+        "x1",
+        "y1"
+      ],
+      "title": "BBox",
+      "type": "object"
+    },
+    "CaseSegment": {
+      "description": "Segmented case boundary linking document pages to a concrete extraction unit.",
+      "properties": {
+        "case_id": {
+          "title": "Case Id",
+          "type": "string"
+        },
+        "document_id": {
+          "title": "Document Id",
+          "type": "string"
+        },
+        "source_filename": {
+          "title": "Source Filename",
+          "type": "string"
+        },
+        "source_type": {
+          "$ref": "#/$defs/SourceType"
+        },
+        "case_order": {
+          "default": 1,
+          "title": "Case Order",
+          "type": "integer"
+        },
+        "source_journal": {
+          "default": "",
+          "title": "Source Journal",
+          "type": "string"
+        },
+        "publication_year": {
+          "default": "",
+          "title": "Publication Year",
+          "type": "string"
+        },
+        "received_year": {
+          "default": "",
+          "title": "Received Year",
+          "type": "string"
+        },
+        "article_title": {
+          "default": "",
+          "title": "Article Title",
+          "type": "string"
+        },
+        "chapter_number": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Chapter Number"
+        },
+        "chapter_title": {
+          "default": "",
+          "title": "Chapter Title",
+          "type": "string"
+        },
+        "case_number": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Case Number"
+        },
+        "case_level": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Case Level"
+        },
+        "case_level_raw": {
+          "default": "",
+          "title": "Case Level Raw",
+          "type": "string"
+        },
+        "title": {
+          "default": "",
+          "title": "Title",
+          "type": "string"
+        },
+        "page_indices": {
+          "items": {
+            "type": "integer"
+          },
+          "title": "Page Indices",
+          "type": "array"
+        },
+        "page_range": {
+          "default": "",
+          "title": "Page Range",
+          "type": "string"
+        },
+        "book_page_range": {
+          "default": "",
+          "title": "Book Page Range",
+          "type": "string"
+        },
+        "image_paths": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Image Paths",
+          "type": "array"
+        },
+        "raw_text": {
+          "default": "",
+          "title": "Raw Text",
+          "type": "string"
+        },
+        "packet_path": {
+          "default": "",
+          "title": "Packet Path",
+          "type": "string"
+        },
+        "lab_rows": {
+          "items": {
+            "$ref": "#/$defs/LabTableRow"
+          },
+          "title": "Lab Rows",
+          "type": "array"
+        },
+        "boundary_uncertain": {
+          "default": false,
+          "title": "Boundary Uncertain",
+          "type": "boolean"
+        },
+        "boundary_notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Boundary Notes",
+          "type": "array"
+        }
+      },
+      "required": [
+        "case_id",
+        "document_id",
+        "source_filename",
+        "source_type"
+      ],
+      "title": "CaseSegment",
+      "type": "object"
+    },
+    "LabTableRow": {
+      "description": "Structured laboratory test row preserving raw OCR/native strings without auto-mutation.",
+      "properties": {
+        "item_raw": {
+          "title": "Item Raw",
+          "type": "string"
+        },
+        "value_raw": {
+          "default": "",
+          "title": "Value Raw",
+          "type": "string"
+        },
+        "unit_raw": {
+          "default": "",
+          "title": "Unit Raw",
+          "type": "string"
+        },
+        "ref_range_raw": {
+          "default": "",
+          "title": "Ref Range Raw",
+          "type": "string"
+        },
+        "flag_raw": {
+          "default": "",
+          "title": "Flag Raw",
+          "type": "string"
+        },
+        "page_index": {
+          "title": "Page Index",
+          "type": "integer"
+        },
+        "bbox": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BBox"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "table_title": {
+          "default": "",
+          "title": "Table Title",
+          "type": "string"
+        },
+        "anomalies": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Anomalies",
+          "type": "array"
+        }
+      },
+      "required": [
+        "item_raw",
+        "page_index"
+      ],
+      "title": "LabTableRow",
+      "type": "object"
+    },
+    "SourceType": {
+      "enum": [
+        "auto",
+        "journal",
+        "book"
+      ],
+      "title": "SourceType",
+      "type": "string"
+    }
+  },
+  "description": "Project-level index produced by the segmentation stage.",
+  "properties": {
+    "schema_version": {
+      "default": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "generated_at": {
+      "title": "Generated At",
+      "type": "string"
+    },
+    "total_documents": {
+      "default": 0,
+      "title": "Total Documents",
+      "type": "integer"
+    },
+    "total_cases": {
+      "default": 0,
+      "title": "Total Cases",
+      "type": "integer"
+    },
+    "cases": {
+      "items": {
+        "$ref": "#/$defs/CaseSegment"
+      },
+      "title": "Cases",
+      "type": "array"
+    },
+    "chapter_continuity_issues": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Chapter Continuity Issues",
+      "type": "array"
+    },
+    "duplicate_case_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Duplicate Case Ids",
+      "type": "array"
+    }
+  },
+  "title": "IndexSummary",
+  "type": "object"
+}

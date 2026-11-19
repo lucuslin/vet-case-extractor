@@ -1,0 +1,195 @@
+{
+  "$defs": {
+    "QAIssue": {
+      "description": "Single structural, semantic, OCR, or provenance issue detected by QA.",
+      "properties": {
+        "issue_id": {
+          "title": "Issue Id",
+          "type": "string"
+        },
+        "case_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Case Id"
+        },
+        "document_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Document Id"
+        },
+        "page_indices": {
+          "items": {
+            "type": "integer"
+          },
+          "title": "Page Indices",
+          "type": "array"
+        },
+        "category": {
+          "enum": [
+            "structural",
+            "semantic",
+            "ocr",
+            "provenance"
+          ],
+          "title": "Category",
+          "type": "string"
+        },
+        "rule_id": {
+          "title": "Rule Id",
+          "type": "string"
+        },
+        "severity": {
+          "$ref": "#/$defs/Severity"
+        },
+        "field_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Field Name"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "suggestion": {
+          "default": "",
+          "title": "Suggestion",
+          "type": "string"
+        },
+        "auto_fixable": {
+          "default": false,
+          "title": "Auto Fixable",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "issue_id",
+        "category",
+        "rule_id",
+        "severity",
+        "message"
+      ],
+      "title": "QAIssue",
+      "type": "object"
+    },
+    "Severity": {
+      "enum": [
+        "info",
+        "warning",
+        "error"
+      ],
+      "title": "Severity",
+      "type": "string"
+    }
+  },
+  "description": "Project-wide quality assurance report.",
+  "properties": {
+    "schema_version": {
+      "default": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "generated_at": {
+      "title": "Generated At",
+      "type": "string"
+    },
+    "project_dir": {
+      "title": "Project Dir",
+      "type": "string"
+    },
+    "total_documents": {
+      "default": 0,
+      "title": "Total Documents",
+      "type": "integer"
+    },
+    "total_cases": {
+      "default": 0,
+      "title": "Total Cases",
+      "type": "integer"
+    },
+    "completed_cases": {
+      "default": 0,
+      "title": "Completed Cases",
+      "type": "integer"
+    },
+    "review_required_cases": {
+      "default": 0,
+      "title": "Review Required Cases",
+      "type": "integer"
+    },
+    "failed_cases": {
+      "default": 0,
+      "title": "Failed Cases",
+      "type": "integer"
+    },
+    "pending_cases": {
+      "default": 0,
+      "title": "Pending Cases",
+      "type": "integer"
+    },
+    "empty_field_counts": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "title": "Empty Field Counts",
+      "type": "object"
+    },
+    "issue_counts_by_severity": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "title": "Issue Counts By Severity",
+      "type": "object"
+    },
+    "issue_counts_by_rule": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "title": "Issue Counts By Rule",
+      "type": "object"
+    },
+    "issues": {
+      "items": {
+        "$ref": "#/$defs/QAIssue"
+      },
+      "title": "Issues",
+      "type": "array"
+    },
+    "overall_status": {
+      "default": "PASS",
+      "enum": [
+        "PASS",
+        "PASS_WITH_WARNINGS",
+        "REVIEW_REQUIRED",
+        "FAIL"
+      ],
+      "title": "Overall Status",
+      "type": "string"
+    }
+  },
+  "required": [
+    "project_dir"
+  ],
+  "title": "QAReport",
+  "type": "object"
+}
