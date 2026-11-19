@@ -199,7 +199,7 @@ def test_normalize_case_fields_cleans_fragments_and_placeholders() -> None:
         segment=segment,
         rules=rules,
         method="agent_interactive",
-        model_name="agy",
+        model_name="test-agent",
         rule_version="1.0.0",
     )
     assert rec.medical_test == ""

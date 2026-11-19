@@ -25,8 +25,7 @@ agent_created: true
 - 要补抽空 PDF、修复治疗栏泄漏、或复查抽取质量。
 
 ## Environment（关键坑，先读）
-- 用 **managed python** venv：`C:\Users\work\.workbuddy\binaries\python\envs\default`
-  （`python.exe -m venv` 建好，pip 装包进该 env，禁止全局装）。
+- 用独立 **Python 虚拟环境（venv）**（`python -m venv .venv` 建好，pip 装包进该 env，禁止全局装）。
 - **PDF 文本抽取引擎选型**：
   - `pdfplumber` 对**部分中文兽医 PDF 会返回空文本**（编码/字体问题），不要默认用它做全量。
   - 优先用 **PyMuPDF (`fitz`)**：`pip install pymupdf`，`doc.load_page(i).get_text()`。
@@ -180,7 +179,7 @@ agent_created: true
      否则会把「驴尿道梗阻」「美洲驼肝胆管疾病」误报为"非物种开头"）、物种后无空格、多诊断用 `；` 而非 `，`。
 
 ### 交付
-- 文件名遵循用户命名约定：`<代号><日期YYYYMMDD><书名>_<用途>.xlsx`（如 `冬窝窝261009兽医临床病例分析_全书病例结构化抽取.xlsx`）。
+- 文件名遵循用户命名约定：`<代号><日期YYYYMMDD><书名>_<用途>.xlsx`（如 `SampleBatch_261009兽医临床病例分析_全书病例结构化抽取.xlsx`）。
 - xlsx 两个 sheet：`病例数据`（7 列，冻结首行、自动换行）+ `说明`（来源、字段口径、Dx 规则、OCR 管线、纪律）。
 - 交付时**主动列出存疑点**（如某例原文无某关键词而用户示例里有 → 请用户拍板），不要默默自行取舍。
 

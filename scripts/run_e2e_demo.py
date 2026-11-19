@@ -186,7 +186,13 @@ def run_demo(work_dir: Path) -> dict[str, Any]:
     payloads_j = _build_synthetic_agent_payloads(idx_j.cases)
     import_file_j = journal_proj / "synthetic_import.json"
     atomic_write_json(import_file_j, payloads_j)
-    import_res_j = import_agent_cases(journal_proj, import_file_j, cfg=cfg)
+    import_res_j = import_agent_cases(
+        journal_proj,
+        import_file_j,
+        model_name="unspecified-agent",
+        agent_platform="unspecified",
+        cfg=cfg,
+    )
     qa_j = run_project_qa(journal_proj, cfg=cfg)
     bundle_j = export_project_bundle(journal_proj, format_mode="journal", cfg=cfg)
 
@@ -207,7 +213,13 @@ def run_demo(work_dir: Path) -> dict[str, Any]:
     payloads_b = _build_synthetic_agent_payloads(idx_b.cases)
     import_file_b = book_proj / "synthetic_book_import.json"
     atomic_write_json(import_file_b, payloads_b)
-    import_res_b = import_agent_cases(book_proj, import_file_b, cfg=cfg)
+    import_res_b = import_agent_cases(
+        book_proj,
+        import_file_b,
+        model_name="unspecified-agent",
+        agent_platform="unspecified",
+        cfg=cfg,
+    )
     qa_b = run_project_qa(book_proj, cfg=cfg)
     bundle_b = export_project_bundle(book_proj, format_mode="book", cfg=cfg)
 

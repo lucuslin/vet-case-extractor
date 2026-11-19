@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0.0",
-  "generated_at": "2026-11-19T05:01:03.073173+00:00",
-  "project_dir": "tmp\\e2e_examples\\journal_project",
+  "generated_at": "2026-11-19T06:46:15.358631+00:00",
+  "project_dir": "examples/synthetic_work/journal_project",
   "total_documents": 2,
   "total_cases": 2,
   "completed_cases": 2,

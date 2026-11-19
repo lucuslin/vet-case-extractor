@@ -31,16 +31,14 @@ from vet_case_extractor.ocr.engine import (
 )
 from vet_case_extractor.ocr.tables import extract_lab_rows
 from vet_case_extractor.pdf.reader import ingest_document
-
-_MSYH_FONT = Path(r"C:\Windows\Fonts\msyh.ttc")
-_SIMSUN_FONT = Path(r"C:\Windows\Fonts\simsun.ttc")
+from vet_case_extractor.utils.fonts import find_cjk_font
 
 
 def _pick_chinese_font() -> Path | None:
-    for candidate in (_SIMSUN_FONT, _MSYH_FONT):
-        if candidate.is_file():
-            return candidate
-    return None
+    try:
+        return find_cjk_font()
+    except FileNotFoundError:
+        return None
 
 
 def test_restore_page_layout_single_column_no_markers() -> None:

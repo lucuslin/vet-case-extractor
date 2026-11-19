@@ -166,7 +166,7 @@ def build_qa_report(
         overall_status = "PASS"
 
     return QAReport(
-        project_dir=str(project_dir),
+        project_dir=Path(project_dir).as_posix(),
         total_documents=total_documents,
         total_cases=total_cases,
         completed_cases=completed_cases,

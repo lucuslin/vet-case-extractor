@@ -1,7 +1,7 @@
 # 兽医临床病例抽取 QA 报告
 
-- **项目目录**: `tmp\e2e_examples\journal_project`
-- **生成时间**: `2026-11-19T05:01:03.073173+00:00`
+- **项目目录**: `examples/synthetic_work/journal_project`
+- **生成时间**: `2026-11-19T06:46:15.358631+00:00`
 - **Schema 版本**: `1.0.0`
 - **总体状态**: **PASS**
 

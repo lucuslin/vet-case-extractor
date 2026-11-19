@@ -2,9 +2,9 @@
   "schema_version": "1.0.0",
   "tool_version": "1.0.0",
   "rule_version": "1.0.0",
-  "generated_at": "2026-11-19T05:01:03.145056+00:00",
-  "project_dir": "tmp\\e2e_examples\\journal_project",
-  "output_dir": "tmp\\e2e_examples\\journal_project\\export",
+  "generated_at": "2026-11-19T06:46:15.453520+00:00",
+  "project_dir": "examples/synthetic_work/journal_project",
+  "output_dir": "examples/synthetic_work/journal_project/export",
   "format": "journal",
   "layer": "normalized",
   "total_documents": 2,
@@ -14,8 +14,12 @@
     "agent_interactive"
   ],
   "models_used": [
-    "agy-agent"
+    "unspecified-agent"
   ],
+  "agent_platforms": [
+    "unspecified"
+  ],
+  "agent_versions": [],
   "token_usage_totals": {},
   "qa_overall_status": "PASS",
   "files": {

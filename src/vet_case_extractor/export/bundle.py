@@ -129,6 +129,8 @@ def export_project_bundle(
     # run_metadata.json
     methods = sorted({r.extraction_method for r in sorted_records if r.extraction_method})
     models_used = sorted({r.model_name for r in sorted_records if r.model_name})
+    agent_platforms = sorted({r.agent_platform for r in sorted_records if r.agent_platform})
+    agent_versions = sorted({r.agent_version for r in sorted_records if r.agent_version})
     token_totals: Counter[str] = Counter()
     for rec in sorted_records:
         for k, v in rec.token_usage.items():
@@ -140,8 +142,8 @@ def export_project_bundle(
         "tool_version": __version__,
         "rule_version": resolved_cfg.rule_version,
         "generated_at": utc_now_iso(),
-        "project_dir": str(resolved_project),
-        "output_dir": str(resolved_output),
+        "project_dir": resolved_project.as_posix(),
+        "output_dir": resolved_output.as_posix(),
         "format": effective_format,
         "layer": layer,
         "total_documents": qa_report.total_documents,
@@ -149,6 +151,8 @@ def export_project_bundle(
         "exported_records": len(sorted_records),
         "extraction_methods": methods,
         "models_used": models_used,
+        "agent_platforms": agent_platforms,
+        "agent_versions": agent_versions,
         "token_usage_totals": dict(token_totals),
         "qa_overall_status": qa_report.overall_status,
         "files": {

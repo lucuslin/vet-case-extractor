@@ -182,9 +182,19 @@ def doctor(ctx: click.Context, as_json: bool) -> None:
     click.echo("API Keys (presence only, never printed):")
     for key_name, present in info["api_keys_present"].items():
         click.echo(f"  - {key_name}: {'SET' if present else 'NOT SET'}")
-    click.echo("Chinese Fonts:")
-    for font_path, exists in info["chinese_fonts"].items():
-        click.echo(f"  - {font_path}: {'FOUND' if exists else 'missing'}")
+    font_probe = info.get("chinese_font_probe", {})
+    plat = font_probe.get("current_platform", "unknown")
+    f_status = font_probe.get("status", "unknown")
+    click.echo(f"Chinese Fonts (platform={plat}, status={f_status}):")
+    candidates = font_probe.get("candidates")
+    if candidates:
+        for cand in candidates:
+            c_stat = cand["status"]
+            label = "FOUND (available)" if c_stat == "available" else c_stat
+            click.echo(f"  - [{cand['platform']}] {cand['path']}: {label}")
+    else:
+        for font_path, exists in info["chinese_fonts"].items():
+            click.echo(f"  - {font_path}: {'FOUND' if exists else 'missing'}")
 
 
 @main.command()
@@ -359,7 +369,7 @@ def prepare_agent_batch_cmd(
     batch_size: int | None,
     include_review: bool,
 ) -> None:
-    """Export EXTRACTION_SPEC.md and batch manifests for interactive AGY Agent extraction."""
+    """Export EXTRACTION_SPEC.md and batch manifests for interactive Agent extraction."""
     cfg: AppConfig = ctx.obj["cfg"]
     master_path = prepare_agent_batch_for_project(
         project_dir=project_dir,
@@ -375,7 +385,23 @@ def prepare_agent_batch_cmd(
 @click.option("--project", "-p", "project_dir", required=True, type=click.Path(path_type=Path))
 @click.option("--input", "-i", "json_path", required=True, type=click.Path(path_type=Path), help="Path to JSON file containing extracted case objects.")
 @click.option("--method", default="agent_interactive", show_default=True, help="Provenance extraction_method label.")
-@click.option("--model-name", default="agy-agent", show_default=True, help="Provenance model_name label.")
+@click.option(
+    "--model-name",
+    default="unspecified-agent",
+    show_default=True,
+    help="Provenance model_name label (e.g. claude-sonnet-4-5, gpt-5, gemini-2.5-pro, or unspecified-agent).",
+)
+@click.option(
+    "--agent-platform",
+    default="unspecified",
+    show_default=True,
+    help="Agent platform identifier (e.g. codex, claude-code, antigravity, gemini-cli, cursor, or unspecified).",
+)
+@click.option(
+    "--agent-version",
+    default="",
+    help="Optional agent client or workflow version string.",
+)
 @click.pass_context
 @_handle_cli_errors
 def import_cases_cmd(
@@ -384,6 +410,8 @@ def import_cases_cmd(
     json_path: Path,
     method: str,
     model_name: str,
+    agent_platform: str,
+    agent_version: str,
 ) -> None:
     """Validate, normalize, provenance-ground, and import agent-extracted JSON cases."""
     cfg: AppConfig = ctx.obj["cfg"]
@@ -392,6 +420,8 @@ def import_cases_cmd(
         json_path=json_path,
         method=method,
         model_name=model_name,
+        agent_platform=agent_platform,
+        agent_version=agent_version,
         cfg=cfg,
     )
     _emit_json(res)

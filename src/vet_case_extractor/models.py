@@ -214,6 +214,7 @@ class EvidenceSpan(BaseModel):
     match_score: float = 0.0
     extraction_method: str = ""
     model_name: str = ""
+    agent_platform: str = ""
     rule_version: str = ""
     review_status: ReviewStatus = ReviewStatus.OK
     notes: str = ""
@@ -292,6 +293,8 @@ class CaseRecord(BaseModel):
     review_reasons: list[str] = Field(default_factory=list)
     extraction_method: str = ""
     model_name: str = ""
+    agent_platform: str = ""
+    agent_version: str = ""
     rule_version: str = ""
     token_usage: dict[str, int] = Field(default_factory=dict)
     error: str | None = None

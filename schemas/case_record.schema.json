@@ -91,6 +91,11 @@
           "title": "Model Name",
           "type": "string"
         },
+        "agent_platform": {
+          "default": "",
+          "title": "Agent Platform",
+          "type": "string"
+        },
         "rule_version": {
           "default": "",
           "title": "Rule Version",
@@ -445,6 +450,16 @@
     "model_name": {
       "default": "",
       "title": "Model Name",
+      "type": "string"
+    },
+    "agent_platform": {
+      "default": "",
+      "title": "Agent Platform",
+      "type": "string"
+    },
+    "agent_version": {
+      "default": "",
+      "title": "Agent Version",
       "type": "string"
     },
     "rule_version": {

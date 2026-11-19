@@ -37,6 +37,7 @@ from vet_case_extractor.providers import (
     parse_agent_import_file,
 )
 from vet_case_extractor.segmentation.indexer import build_project_index
+from vet_case_extractor.utils.fonts import probe_cjk_fonts
 from vet_case_extractor.utils.logging import setup_logging
 from vet_case_extractor.validation.qa import run_project_qa
 
@@ -60,12 +61,6 @@ _DOCTOR_PACKAGES: tuple[tuple[str, str, str], ...] = (
     ("httpx", "httpx", "HTTPX"),
     ("click", "click", "Click"),
     ("mcp", "mcp", "MCP SDK"),
-)
-
-_WINDOWS_FONT_PATHS: tuple[Path, ...] = (
-    Path(r"C:\Windows\Fonts\msyh.ttc"),
-    Path(r"C:\Windows\Fonts\simsun.ttc"),
-    Path(r"C:\Windows\Fonts\simhei.ttf"),
 )
 
 
@@ -108,7 +103,8 @@ def run_doctor(cfg: AppConfig | None = None) -> dict[str, Any]:
         "OPENAI_BASE_URL": bool(os.environ.get("OPENAI_BASE_URL", "").strip()),
     }
 
-    fonts = {str(p): p.exists() for p in _WINDOWS_FONT_PATHS}
+    font_probe = probe_cjk_fonts()
+    fonts = font_probe["legacy_map"]
     config_dir = find_config_dir()
 
     return {
@@ -128,7 +124,14 @@ def run_doctor(cfg: AppConfig | None = None) -> dict[str, Any]:
             "configured_ocr_workers": resolved_cfg.ocr.workers,
         },
         "chinese_fonts": fonts,
-        "any_chinese_font_available": any(fonts.values()),
+        "chinese_font_probe": {
+            "current_platform": font_probe["current_platform"],
+            "status": font_probe["status"],
+            "selected_font": font_probe["selected_font"],
+            "candidates": font_probe["candidates"],
+            "note": font_probe["note"],
+        },
+        "any_chinese_font_available": font_probe["status"] == "available",
     }
 
 
@@ -486,7 +489,9 @@ def import_agent_cases(
     json_path: str | Path,
     *,
     method: str = "agent_interactive",
-    model_name: str = "agy-agent",
+    model_name: str = "unspecified-agent",
+    agent_platform: str = "unspecified",
+    agent_version: str = "",
     cfg: AppConfig | None = None,
 ) -> dict[str, Any]:
     """Validate, normalize, provenance-ground, and persist agent-extracted JSON records."""
@@ -555,6 +560,10 @@ def import_agent_cases(
             rule_version=resolved_cfg.rules.rule_version,
             evidence_quotes=payload.evidence_quotes,
         )
+        record.agent_platform = agent_platform
+        record.agent_version = agent_version
+        for span in record.evidence_spans:
+            span.agent_platform = agent_platform
         ws.save_case_record(record)
         manifest.case_statuses[record.case_id] = record.status
         imported_ids.append(record.case_id)
@@ -579,6 +588,8 @@ def import_agent_cases(
         "project_dir": str(ws.project_dir),
         "method": method,
         "model_name": model_name,
+        "agent_platform": agent_platform,
+        "agent_version": agent_version,
         "imported": len(imported_ids),
         "completed": completed_n,
         "review_required": review_n,
