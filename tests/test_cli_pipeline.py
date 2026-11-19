@@ -5,6 +5,8 @@ from __future__ import annotations
 import asyncio
 import json
 import shutil
+import subprocess
+import sys
 from pathlib import Path
 
 from click.testing import CliRunner
@@ -15,6 +17,7 @@ from vet_case_extractor import mcp_server
 from vet_case_extractor.cli import EXIT_OK, EXIT_QA_FAILURE, main
 from vet_case_extractor.models import LLMExtractedPayload, QAReport
 from vet_case_extractor.providers.base import LLMProvider, LLMResponse
+from vet_case_extractor.utils.fonts import probe_cjk_fonts
 from vet_case_extractor.utils.io import atomic_write_json
 
 
@@ -306,6 +309,8 @@ def test_cli_journal_e2e_with_real_rapidocr_and_agent_bridge(
     assert imp_res.exit_code == EXIT_OK, imp_res.output
     imp_data = json.loads(imp_res.stdout)
     assert imp_data["imported"] == 5
+    assert imp_data["model_name"] == "unspecified-agent"
+    assert imp_data["agent_platform"] == "unspecified"
 
     # Status command
     st_res = runner.invoke(main, ["status", "-p", str(proj)])
@@ -420,14 +425,35 @@ def test_cli_book_e2e_with_real_rapidocr(
     imp_file = proj / "book_import.json"
     atomic_write_json(imp_file, import_items)
 
-    assert (
-        runner.invoke(main, ["import-cases", "-p", str(proj), "-i", str(imp_file)]).exit_code
-        == EXIT_OK
+    imp_book_res = runner.invoke(
+        main,
+        [
+            "import-cases",
+            "-p",
+            str(proj),
+            "-i",
+            str(imp_file),
+            "--agent-platform",
+            "claude-code",
+            "--model-name",
+            "claude-sonnet-4-5",
+            "--agent-version",
+            "1.0",
+        ],
     )
+    assert imp_book_res.exit_code == EXIT_OK, imp_book_res.output
+    imp_book_data = json.loads(imp_book_res.stdout)
+    assert imp_book_data["agent_platform"] == "claude-code"
+    assert imp_book_data["model_name"] == "claude-sonnet-4-5"
+    assert imp_book_data["agent_version"] == "1.0"
     assert runner.invoke(main, ["qa", "-p", str(proj)]).exit_code == EXIT_OK
     exp_res = runner.invoke(main, ["export", "-p", str(proj), "--format", "book"])
     assert exp_res.exit_code == EXIT_OK, exp_res.output
-    wb = load_workbook(json.loads(exp_res.stdout)["excel"])
+    exp_book_paths = json.loads(exp_res.stdout)
+    run_meta = json.loads(Path(exp_book_paths["run_metadata_json"]).read_text(encoding="utf-8"))
+    assert run_meta["agent_platforms"] == ["claude-code"]
+    assert run_meta["models_used"] == ["claude-sonnet-4-5"]
+    wb = load_workbook(exp_book_paths["excel"])
     assert wb["病例数据"].max_column == 7
     assert wb["病例数据"].max_row == 5
     wb.close()
@@ -457,7 +483,15 @@ def test_cli_extract_with_stub_provider_and_mcp_server(
     server = mcp_server.create_mcp_server()
     tools = asyncio.run(server.list_tools())
     tool_names = {t.name for t in tools}
-    assert tool_names == {"ingest_pdf", "extract_cases", "validate_cases", "export_cases", "get_status"}
+    assert tool_names == {
+        "ingest_pdf",
+        "extract_cases",
+        "prepare_agent_batch",
+        "import_cases",
+        "validate_cases",
+        "export_cases",
+        "get_status",
+    }
 
     status_out = mcp_server.get_status(str(proj))
     assert status_out["extracted_records"] == 1
@@ -466,6 +500,88 @@ def test_cli_extract_with_stub_provider_and_mcp_server(
 
     call_res = asyncio.run(server.call_tool("get_status", {"project_dir": str(proj)}))
     assert not call_res.is_error
+
+    # Verify real MCP stdio JSON-RPC handshake + tools/list + tools/call
+    proc = subprocess.Popen(
+        [sys.executable, "-m", "vet_case_extractor.mcp_server"],
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        encoding="utf-8",
+    )
+    assert proc.stdin is not None and proc.stdout is not None
+
+    def _send_and_recv(req: dict, expect_reply: bool = True) -> dict | None:
+        assert proc.stdin is not None and proc.stdout is not None
+        proc.stdin.write(json.dumps(req) + "\n")
+        proc.stdin.flush()
+        if not expect_reply:
+            return None
+        while True:
+            line = proc.stdout.readline()
+            if not line:
+                return None
+            if line.strip().startswith("{"):
+                return json.loads(line)
+
+    try:
+        r1 = _send_and_recv(
+            {
+                "jsonrpc": "2.0",
+                "id": 1,
+                "method": "initialize",
+                "params": {
+                    "protocolVersion": "2024-11-05",
+                    "capabilities": {},
+                    "clientInfo": {"name": "pytest-mcp-client", "version": "1.0.0"},
+                },
+            }
+        )
+        _send_and_recv({"jsonrpc": "2.0", "method": "notifications/initialized"}, expect_reply=False)
+        r2 = _send_and_recv({"jsonrpc": "2.0", "id": 2, "method": "tools/list", "params": {}})
+        r3 = _send_and_recv(
+            {
+                "jsonrpc": "2.0",
+                "id": 3,
+                "method": "tools/call",
+                "params": {"name": "get_status", "arguments": {"project_dir": str(proj)}},
+            }
+        )
+    finally:
+        proc.stdin.close()
+        proc.wait(timeout=10)
+
+    assert r1 is not None and r1.get("id") == 1
+    assert r2 is not None and r2.get("id") == 2
+    assert r3 is not None and r3.get("id") == 3
+    listed_names = {t["name"] for t in r2["result"]["tools"]}
+    assert "ingest_pdf" in listed_names and "import_cases" in listed_names
+    assert r3["result"].get("isError") is not True
+
+
+def test_cross_platform_font_probe_statuses(tmp_path: Path, monkeypatch) -> None:
+    # 1. unchecked mode
+    unchecked = probe_cjk_fonts(check_filesystem=False)
+    assert unchecked["status"] == "unchecked"
+    assert all(c["status"] == "unchecked" for c in unchecked["candidates"])
+
+    # 2. custom font available vs missing + cross-platform not_applicable
+    fake_font = tmp_path / "custom_cjk.ttf"
+    fake_font.write_bytes(b"FAKEFONT")
+    monkeypatch.setenv("VETCASE_CJK_FONT", str(fake_font))
+    avail_probe = probe_cjk_fonts(target_platform="linux")
+    assert avail_probe["status"] == "available"
+    assert avail_probe["selected_font"] == str(fake_font)
+    statuses = {c["status"] for c in avail_probe["candidates"]}
+    assert "available" in statuses
+    assert "not_applicable" in statuses
+
+    # 3. missing custom font
+    monkeypatch.setenv("VETCASE_CJK_FONT", str(tmp_path / "nonexistent.ttf"))
+    missing_custom = probe_cjk_fonts(target_platform="macos")
+    assert missing_custom["candidates"][0]["status"] == "missing"
+    assert any(c["status"] == "not_applicable" for c in missing_custom["candidates"])
 
 
 def test_cli_output_alias_on_ingest_and_run(

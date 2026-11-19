@@ -2,9 +2,9 @@
   "schema_version": "1.0.0",
   "tool_version": "1.0.0",
   "rule_version": "1.0.0",
-  "generated_at": "2026-11-19T05:01:28.170516+00:00",
-  "project_dir": "tmp\\e2e_examples\\book_project",
-  "output_dir": "tmp\\e2e_examples\\book_project\\export",
+  "generated_at": "2026-11-19T06:46:48.649875+00:00",
+  "project_dir": "examples/synthetic_work/book_project",
+  "output_dir": "examples/synthetic_work/book_project/export",
   "format": "book",
   "layer": "normalized",
   "total_documents": 1,
@@ -14,8 +14,12 @@
     "agent_interactive"
   ],
   "models_used": [
-    "agy-agent"
+    "unspecified-agent"
   ],
+  "agent_platforms": [
+    "unspecified"
+  ],
+  "agent_versions": [],
   "token_usage_totals": {},
   "qa_overall_status": "PASS",
   "files": {

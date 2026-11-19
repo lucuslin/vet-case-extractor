@@ -1,6 +1,6 @@
 {
   "warning": "UNANNOTATED_SYNTHETIC_NOT_CLINICAL_ACCURACY",
-  "font_used": "C:\\Windows\\Fonts\\msyh.ttc",
+  "font_used": "msyh.ttc",
   "fixtures": {
     "native_single": "合成_猫血支原体感染病例报告.pdf",
     "scanned_dual_col": "合成_纯扫描双栏犬肝酶异常病例.pdf",

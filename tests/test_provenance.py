@@ -185,7 +185,7 @@ def test_provenance_empty_fields_stay_ok_and_multi_block_span_computes_union_bbo
         record=record,
         pages=pages,
         extraction_method="agent_interactive",
-        model_name="agy",
+        model_name="test-agent",
         rule_version="1.0.0",
     )
     assert grounded.review_status == ReviewStatus.OK

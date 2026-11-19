@@ -90,7 +90,7 @@ def test_book_excel_7_columns_sort_and_raw_layer(
     )
     shuffled = [sample_book_records[1], ch1_c2, sample_book_records[0]]
 
-    norm_xlsx = tmp_path / "冬窝窝261009兽医临床病例分析_全书病例结构化抽取.xlsx"
+    norm_xlsx = tmp_path / "SampleBatch_261009兽医临床病例分析_全书病例结构化抽取.xlsx"
     raw_xlsx = tmp_path / "raw_layer.xlsx"
 
     export_to_excel(shuffled, norm_xlsx, format_mode="book", layer="normalized", cfg=app_config)

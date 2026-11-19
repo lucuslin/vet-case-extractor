@@ -11,9 +11,11 @@ from vet_case_extractor.models import SourceType
 from vet_case_extractor.pipeline import (
     extract_project,
     get_project_status,
+    import_agent_cases,
     index_project,
     ingest_project,
     ocr_project,
+    prepare_agent_batch_for_project,
 )
 from vet_case_extractor.validation.qa import run_project_qa
 
@@ -112,11 +114,52 @@ def get_status(project_dir: str) -> dict[str, Any]:
     return get_project_status(project_dir)
 
 
+def prepare_agent_batch(
+    project_dir: str,
+    output_dir: str | None = None,
+    batch_size: int = 8,
+    include_review: bool = False,
+) -> dict[str, str]:
+    """Export EXTRACTION_SPEC.md and pending batch manifests for interactive Agent extraction."""
+    cfg = load_config()
+    manifest_path = prepare_agent_batch_for_project(
+        project_dir=project_dir,
+        output_dir=output_dir,
+        batch_size=batch_size,
+        include_review=include_review,
+        cfg=cfg,
+    )
+    return {"agent_batches_manifest": str(manifest_path)}
+
+
+def import_cases(
+    project_dir: str,
+    json_path: str,
+    method: str = "agent_interactive",
+    model_name: str = "unspecified-agent",
+    agent_platform: str = "mcp-client",
+    agent_version: str = "",
+) -> dict[str, Any]:
+    """Validate, normalize, provenance-ground, and import agent-extracted JSON cases."""
+    cfg = load_config()
+    return import_agent_cases(
+        project_dir=project_dir,
+        json_path=json_path,
+        method=method,
+        model_name=model_name,
+        agent_platform=agent_platform,
+        agent_version=agent_version,
+        cfg=cfg,
+    )
+
+
 def create_mcp_server(name: str = "vet-case-extractor") -> Any:
-    """Create and configure the MCP server with all 5 vet-case-extractor tools."""
+    """Create and configure the MCP server with all vet-case-extractor tools."""
     server = _create_mcp_instance(name=name)
     server.tool()(ingest_pdf)
     server.tool()(extract_cases)
+    server.tool()(prepare_agent_batch)
+    server.tool()(import_cases)
     server.tool()(validate_cases)
     server.tool()(export_cases)
     server.tool()(get_status)

@@ -21,30 +21,9 @@ from pathlib import Path
 import pymupdf as fitz
 from PIL import Image, ImageDraw, ImageFont
 
+from vet_case_extractor.utils.fonts import find_cjk_font
+
 SYNTHETIC_BANNER = "【SYNTHETIC TEST FIXTURE / 合成测试数据 — 非真实临床病例】"
-
-_DEFAULT_FONT_CANDIDATES = (
-    Path(r"C:\Windows\Fonts\msyh.ttc"),
-    Path(r"C:\Windows\Fonts\simsun.ttc"),
-    Path(r"C:\Windows\Fonts\simhei.ttf"),
-    Path("/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"),
-    Path("/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc"),
-)
-
-
-def find_cjk_font(explicit_font: str | Path | None = None) -> Path:
-    """Locate a CJK TrueType/TTC font on Windows or Linux."""
-    if explicit_font is not None:
-        p = Path(explicit_font)
-        if p.exists():
-            return p
-        raise FileNotFoundError(f"Explicit font not found: {p}")
-    for candidate in _DEFAULT_FONT_CANDIDATES:
-        if candidate.exists():
-            return candidate
-    raise FileNotFoundError(
-        "No CJK font found. Checked: " + ", ".join(str(p) for p in _DEFAULT_FONT_CANDIDATES)
-    )
 
 
 def _wrap_cjk_lines(text: str, width: int = 34) -> list[str]:
@@ -420,7 +399,7 @@ def generate_all_fixtures(
     manifest_path = out_dir / "synthetic_fixtures_manifest.json"
     manifest_payload = {
         "warning": "UNANNOTATED_SYNTHETIC_NOT_CLINICAL_ACCURACY",
-        "font_used": str(resolved_font),
+        "font_used": resolved_font.name,
         "fixtures": {k: v.name for k, v in fixtures.items()},
     }
     manifest_path.write_text(

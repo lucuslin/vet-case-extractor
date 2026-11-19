@@ -1,7 +1,8 @@
-# Python environments and caches
+# Python environments and build artifacts
 .venv/
 .venv_*/
 venv/
+env/
 __pycache__/
 *.py[cod]
 *$py.class
@@ -13,14 +14,34 @@ dist/
 .ruff_cache/
 .mypy_cache/
 
-# Secrets & local environment
+# Secrets, credentials, and local environment overrides
 .env
 .env.*
 !.env.example
+*.pem
+*.key
+*credentials*.json
+*secret*.json
 
-# Local runs, real private PDFs, temporary verification outputs
+# Local runtime workspaces, OCR caches, and user/clinical PDFs
 runs/
+tmp/
+output/
+outputs/
+pages_raw/
+pages_ocr/
+pages_img/
+agent_batches/
 *.tmp
 *.bak
 *.log
-tmp/
+
+# Editor & AI Agent local/private state
+.vscode/
+.idea/
+.claude/
+.codex/
+.cursor/
+.agents/
+.agent/
+.mcp.json

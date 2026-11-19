@@ -1,6 +1,6 @@
 # 病例报告三模块结构化抽取 —— 运行时依赖
-# 安装到 managed python venv（禁止全局安装）：
-#   C:\Users\work\.workbuddy\binaries\python\envs\default\Scripts\python.exe -m pip install -r requirements.txt
+# 安装到独立 Python 虚拟环境（禁止全局安装）：
+#   <path-to-venv>/bin/python -m pip install -r requirements.txt
 
 # PDF 文本层抽取（首选引擎，比 pdfplumber 对中文兽医期刊更稳）
 pymupdf>=1.23.0          # import fitz

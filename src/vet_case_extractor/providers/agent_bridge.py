@@ -1,4 +1,4 @@
-"""Interactive AGY Agent batch export and strict JSON import bridge (no silent API spoofing)."""
+"""Interactive Agent batch export and strict JSON import bridge (platform-agnostic, no silent API spoofing)."""
 
 from __future__ import annotations
 
@@ -71,7 +71,7 @@ def export_agent_batch(
     rules: ExtractionRules,
     batch_size: int = 8,
 ) -> Path:
-    """Export `EXTRACTION_SPEC.md`, per-batch manifests, and master batch manifest for AGY agent mode."""
+    """Export `EXTRACTION_SPEC.md`, per-batch manifests, and master batch manifest for interactive agent mode."""
     if batch_size < 1:
         raise ValueError(f"batch_size must be >= 1, got {batch_size}")
 

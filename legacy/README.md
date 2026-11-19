@@ -26,10 +26,10 @@
 
 Windows 实际路径：`C:\Users\<用户名>\.workbuddy\skills\`
 
-2. 安装依赖到 managed python venv（**不要全局安装**）：
+2. 安装依赖到独立 Python 虚拟环境（**不要全局安装**）：
 
 ```powershell
-C:\Users\work\.workbuddy\binaries\python\envs\default\Scripts\python.exe -m pip install -r requirements.txt
+<path-to-venv>\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
 ## 使用

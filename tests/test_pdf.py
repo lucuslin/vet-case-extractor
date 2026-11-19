@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import io
+import os
 from pathlib import Path
 from unittest.mock import patch
 
@@ -20,17 +21,14 @@ from vet_case_extractor.models import (
 )
 from vet_case_extractor.pdf.quality import assess_page_quality
 from vet_case_extractor.pdf.reader import ingest_document
-
-_MSYH_FONT = Path(r"C:\Windows\Fonts\msyh.ttc")
-_SIMSUN_FONT = Path(r"C:\Windows\Fonts\simsun.ttc")
-_PAPERS_DIR = Path(r"d:\Antigravity\workspace\dev\vet_pdf\papers")
+from vet_case_extractor.utils.fonts import find_cjk_font
 
 
 def _pick_chinese_font() -> Path | None:
-    for candidate in (_MSYH_FONT, _SIMSUN_FONT):
-        if candidate.is_file():
-            return candidate
-    return None
+    try:
+        return find_cjk_font()
+    except FileNotFoundError:
+        return None
 
 
 def test_quality_distinguishes_founder_pua_from_corrupted_pua() -> None:
@@ -224,37 +222,27 @@ def test_ingest_corrupted_pdf_sets_failed_without_crash(tmp_path: Path) -> None:
     assert artifacts == []
 
 
-def test_smoke_real_papers_if_present(tmp_path: Path) -> None:
-    paper_scanned = _PAPERS_DIR / "猫乳腺纤维腺瘤样增生的病理诊断和治疗.pdf"
-    paper_founder = _PAPERS_DIR / "猫弥散性虹膜黑色素瘤的病例报告.pdf"
-    if not paper_scanned.exists() or not paper_founder.exists():
-        pytest.skip("Local papers directory not present")
+def test_smoke_local_corpus_if_configured(tmp_path: Path) -> None:
+    """Optional local PDF corpus smoke test when VETCASE_LOCAL_PAPERS_DIR is explicitly set."""
+    env_dir = os.environ.get("VETCASE_LOCAL_PAPERS_DIR", "").strip()
+    if not env_dir:
+        pytest.skip("VETCASE_LOCAL_PAPERS_DIR not set; skipping local corpus smoke test")
+    papers_dir = Path(env_dir)
+    if not papers_dir.is_dir():
+        pytest.skip("Configured VETCASE_LOCAL_PAPERS_DIR does not exist")
+    pdfs = sorted(papers_dir.glob("*.pdf"))[:2]
+    if not pdfs:
+        pytest.skip("No PDF files found in VETCASE_LOCAL_PAPERS_DIR")
 
     ws = ProjectWorkspace(tmp_path / "smoke_ws")
     ws.init_project(source_type=SourceType.JOURNAL)
     cfg = AppConfig()
 
-    # 1. Mixed scanned + text PDF
-    manifest, added_s, _ = ws.register_pdfs(paper_scanned, source_type=SourceType.JOURNAL)
-    doc_s, arts_s = ingest_document(
-        manifest.documents[added_s[0]], ws, cfg, render_all_pages=False
-    )
-    assert doc_s.status == TaskStatus.COMPLETED
-    assert doc_s.page_count == 3
-    assert arts_s[0].quality.needs_ocr is True
-    assert arts_s[1].quality.needs_ocr is False
-    assert arts_s[2].quality.needs_ocr is True
-
-    # 2. CNKI/Founder PUA punctuation PDF
-    manifest, added_f, _ = ws.register_pdfs(paper_founder, source_type=SourceType.JOURNAL)
-    doc_f, arts_f = ingest_document(
-        manifest.documents[added_f[0]], ws, cfg, render_all_pages=False
-    )
-    assert doc_f.status == TaskStatus.COMPLETED
-    assert doc_f.page_count == 3
-    assert doc_f.pages_needing_ocr == []
-    assert all(a.quality.founder_pua_count > 0 for a in arts_f)
-    assert all(a.quality.pua_count == 0 for a in arts_f)
-    assert "猫弥散性虹膜黑色素瘤" in arts_f[0].layout_text
-    assert "[[左栏]]" in arts_f[0].layout_text
-    assert "[[右栏]]" in arts_f[0].layout_text
+    for pdf_path in pdfs:
+        manifest, added, _ = ws.register_pdfs(pdf_path, source_type=SourceType.JOURNAL)
+        doc_rec, arts = ingest_document(
+            manifest.documents[added[0]], ws, cfg, render_all_pages=False
+        )
+        assert doc_rec.status == TaskStatus.COMPLETED
+        assert doc_rec.page_count == len(arts)
+        assert len(arts) >= 1
