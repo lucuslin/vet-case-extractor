@@ -1,0 +1,142 @@
+[
+  {
+    "document_id": "合成_猫血支原体感染病例报告_f50085faeec6",
+    "file_sha256": "f50085faeec6c0e12becfc51dbfa341a63bfaea304fb7cc2b8084d013b0f4ed3",
+    "case_id": "合成_猫血支原体感染病例报告_f50085faeec6__case_001",
+    "field_name": "medical_history",
+    "page_index": 0,
+    "quote": "体温39.8℃",
+    "bbox": {
+      "x0": 48.0,
+      "y0": 191.8330078125,
+      "x1": 397.8300476074219,
+      "y1": 207.00149536132812
+    },
+    "match_score": 1.0,
+    "extraction_method": "agent_interactive",
+    "model_name": "agy-agent",
+    "rule_version": "1.0.0",
+    "review_status": "ok",
+    "notes": ""
+  },
+  {
+    "document_id": "合成_猫血支原体感染病例报告_f50085faeec6",
+    "file_sha256": "f50085faeec6c0e12becfc51dbfa341a63bfaea304fb7cc2b8084d013b0f4ed3",
+    "case_id": "合成_猫血支原体感染病例报告_f50085faeec6__case_001",
+    "field_name": "medical_test",
+    "page_index": 0,
+    "quote": "猫血支原体阳性",
+    "bbox": {
+      "x0": 48.0,
+      "y0": 293.8330078125,
+      "x1": 429.06402587890625,
+      "y1": 309.0014953613281
+    },
+    "match_score": 1.0,
+    "extraction_method": "agent_interactive",
+    "model_name": "agy-agent",
+    "rule_version": "1.0.0",
+    "review_status": "ok",
+    "notes": ""
+  },
+  {
+    "document_id": "合成_猫血支原体感染病例报告_f50085faeec6",
+    "file_sha256": "f50085faeec6c0e12becfc51dbfa341a63bfaea304fb7cc2b8084d013b0f4ed3",
+    "case_id": "合成_猫血支原体感染病例报告_f50085faeec6__case_001",
+    "field_name": "medical_treatment",
+    "page_index": 0,
+    "quote": "口服多西环素10 mg/kg，每日2次，连用21天",
+    "bbox": {
+      "x0": 48.0,
+      "y0": 359.8330078125,
+      "x1": 432.22650146484375,
+      "y1": 375.0014953613281
+    },
+    "match_score": 1.0,
+    "extraction_method": "agent_interactive",
+    "model_name": "agy-agent",
+    "rule_version": "1.0.0",
+    "review_status": "ok",
+    "notes": ""
+  },
+  {
+    "document_id": "合成_猫血支原体感染病例报告_f50085faeec6",
+    "file_sha256": "f50085faeec6c0e12becfc51dbfa341a63bfaea304fb7cc2b8084d013b0f4ed3",
+    "case_id": "合成_猫血支原体感染病例报告_f50085faeec6__case_001",
+    "field_name": "diagnosis",
+    "page_index": 0,
+    "quote": "猫血支原体感染",
+    "bbox": {
+      "x0": 48.0,
+      "y0": 125.83300018310547,
+      "x1": 202.65200805664062,
+      "y1": 141.00149536132812
+    },
+    "match_score": 1.0,
+    "extraction_method": "agent_interactive",
+    "model_name": "agy-agent",
+    "rule_version": "1.0.0",
+    "review_status": "ok",
+    "notes": ""
+  },
+  {
+    "document_id": "合成_猫血支原体感染病例报告_f50085faeec6",
+    "file_sha256": "f50085faeec6c0e12becfc51dbfa341a63bfaea304fb7cc2b8084d013b0f4ed3",
+    "case_id": "合成_猫血支原体感染病例报告_f50085faeec6__case_001",
+    "field_name": "follow_up",
+    "page_index": 0,
+    "quote": "治疗2周后复查食欲恢复，精神好转",
+    "bbox": {
+      "x0": 48.0,
+      "y0": 377.8330078125,
+      "x1": 399.739013671875,
+      "y1": 393.0014953613281
+    },
+    "match_score": 1.0,
+    "extraction_method": "agent_interactive",
+    "model_name": "agy-agent",
+    "rule_version": "1.0.0",
+    "review_status": "ok",
+    "notes": ""
+  },
+  {
+    "document_id": "合成_猫角膜穿孔合订本病例_6bf20a8d5cab",
+    "file_sha256": "6bf20a8d5cab99f394881f12e6446bef26a85476d37a16750e237c6d3b512706",
+    "case_id": "合成_猫角膜穿孔合订本病例_6bf20a8d5cab__case_001",
+    "field_name": "medical_history",
+    "page_index": 1,
+    "quote": "猫角膜穿孔结膜瓣移植术病例报告",
+    "bbox": {
+      "x0": 48.0,
+      "y0": 125.83300018310547,
+      "x1": 220.5,
+      "y1": 141.00149536132812
+    },
+    "match_score": 1.0,
+    "extraction_method": "agent_interactive",
+    "model_name": "agy-agent",
+    "rule_version": "1.0.0",
+    "review_status": "ok",
+    "notes": ""
+  },
+  {
+    "document_id": "合成_猫角膜穿孔合订本病例_6bf20a8d5cab",
+    "file_sha256": "6bf20a8d5cab99f394881f12e6446bef26a85476d37a16750e237c6d3b512706",
+    "case_id": "合成_猫角膜穿孔合订本病例_6bf20a8d5cab__case_001",
+    "field_name": "diagnosis",
+    "page_index": 1,
+    "quote": "猫角膜穿孔",
+    "bbox": {
+      "x0": 48.0,
+      "y0": 125.83300018310547,
+      "x1": 220.5,
+      "y1": 141.00149536132812
+    },
+    "match_score": 1.0,
+    "extraction_method": "agent_interactive",
+    "model_name": "agy-agent",
+    "rule_version": "1.0.0",
+    "review_status": "ok",
+    "notes": ""
+  }
+]

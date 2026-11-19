@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": "2026-11-19T05:01:03.073173+00:00",
+  "project_dir": "tmp\\e2e_examples\\journal_project",
+  "total_documents": 2,
+  "total_cases": 2,
+  "completed_cases": 2,
+  "review_required_cases": 0,
+  "failed_cases": 0,
+  "pending_cases": 0,
+  "empty_field_counts": {
+    "medical_history": 0,
+    "medical_test": 1,
+    "medical_treatment": 1,
+    "Dx": 0,
+    "follow-up": 1,
+    "notes": 2
+  },
+  "issue_counts_by_severity": {},
+  "issue_counts_by_rule": {},
+  "issues": [],
+  "overall_status": "PASS"
+}

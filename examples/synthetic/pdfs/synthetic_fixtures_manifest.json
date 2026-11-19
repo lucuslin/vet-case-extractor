@@ -1,0 +1,13 @@
+{
+  "warning": "UNANNOTATED_SYNTHETIC_NOT_CLINICAL_ACCURACY",
+  "font_used": "C:\\Windows\\Fonts\\msyh.ttc",
+  "fixtures": {
+    "native_single": "合成_猫血支原体感染病例报告.pdf",
+    "scanned_dual_col": "合成_纯扫描双栏犬肝酶异常病例.pdf",
+    "mixed_native_scanned": "合成_混合原生与扫描病例报告.pdf",
+    "multi_case": "合成_一文多病例报告.pdf",
+    "omnibus": "合成_猫角膜穿孔合订本病例.pdf",
+    "scanned_book": "合成_扫描兽医病例分析书籍.pdf",
+    "corrupted": "合成_损坏PDF文件.pdf"
+  }
+}

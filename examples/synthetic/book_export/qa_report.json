@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": "2026-11-19T05:01:28.104361+00:00",
+  "project_dir": "tmp\\e2e_examples\\book_project",
+  "total_documents": 1,
+  "total_cases": 4,
+  "completed_cases": 4,
+  "review_required_cases": 0,
+  "failed_cases": 0,
+  "pending_cases": 0,
+  "empty_field_counts": {
+    "medical_history": 0,
+    "medical_test": 0,
+    "medical_treatment": 2,
+    "Dx": 0,
+    "follow-up": 2,
+    "notes": 4
+  },
+  "issue_counts_by_severity": {},
+  "issue_counts_by_rule": {},
+  "issues": [],
+  "overall_status": "PASS"
+}

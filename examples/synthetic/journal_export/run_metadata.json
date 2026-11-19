@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0.0",
+  "tool_version": "1.0.0",
+  "rule_version": "1.0.0",
+  "generated_at": "2026-11-19T05:01:03.145056+00:00",
+  "project_dir": "tmp\\e2e_examples\\journal_project",
+  "output_dir": "tmp\\e2e_examples\\journal_project\\export",
+  "format": "journal",
+  "layer": "normalized",
+  "total_documents": 2,
+  "total_cases": 2,
+  "exported_records": 2,
+  "extraction_methods": [
+    "agent_interactive"
+  ],
+  "models_used": [
+    "agy-agent"
+  ],
+  "token_usage_totals": {},
+  "qa_overall_status": "PASS",
+  "files": {
+    "excel": "病例抽取_总表.xlsx",
+    "cases_jsonl": "cases.jsonl",
+    "provenance_json": "provenance.json",
+    "qa_report_json": "qa_report.json",
+    "qa_report_md": "qa_report.md",
+    "review_queue_json": "review_queue.json"
+  }
+}
